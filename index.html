@@ -7,7 +7,7 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            font-size: 20px; /* 全体の文字を大きく */
+            font-size: 20px;
         }
         .tab-buttons { 
             display: flex; 
@@ -31,6 +31,20 @@
             font-size: 22px;
             cursor: pointer;
         }
+
+        /* ポップアップGIFのスタイル */
+        #popupImage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 9999;
+        }
+        #popupImage img {
+            width: 200px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -40,11 +54,155 @@
 <div class="tab-buttons" id="tabButtons"></div>
 <div id="tabContents"></div>
 
+<!-- ★ GIFポップアップ用の要素 -->
+<div id="popupImage">
+    <img id="popupGif" src="">
+</div>
+
 <script>
 async function loadData() {
     const response = await fetch("data.json");
     const data = await response.json();
     return data;
+}
+
+// ★ ボタン押下回数カウンター
+let clickCount = 0;
+
+// ★ ランダムGIFポップアップ
+function showRandomGif() {
+    const folder = "illust/";
+
+    // ★ ここにあなたのGIFファイル名を追加してください
+    const images = [
+        "あいさつ.gif",
+        "うがい.gif",
+        "おかたずけ.gif",
+        "すいぶんほきゅう.gif",
+        "てあらい.gif",
+        "アシマリ01.gif",
+        "イーブイ01.gif",
+        "イーブイ02.gif",
+        "カイリュー01.gif",
+        "カビゴン01.gif",
+        "ギャラドス01.gif",
+        "ゲンガー01.gif",
+        "コイキング01.gif",
+        "コダック01.gif",
+        "サルノリ01.gif",
+        "サンダー01.gif",
+        "サンダース01.gif",
+        "シャワーズ01.gif",
+        "ゼニガメ01.gif",
+        "ゼニガメ02.gif",
+        "ソーナンス01.gif",
+        "チェリム01.gif",
+        "ナエトル.gif",
+        "ニャビー01.gif",
+        "ニャース01.gif",
+        "ヒコザル.gif",
+        "ヒトカゲ01.gif",
+        "ヒトカゲ02.gif",
+        "ヒノアラシ.gif",
+        "ヒバニー01.gif",
+        "ピカチュウ01.gif",
+        "ピカチュウ02.gif",
+        "ピカチュウ03.gif",
+        "ピカチュウ04.gif",
+        "ピカチュウ05.gif",
+        "ピカチュウ06.gif",
+        "ピカチュウ07.gif",
+        "ピカチュウ08.gif",
+        "ピカチュウ09.gif",
+        "ピカチュウ10.gif",
+        "ピカチュウ11.gif",
+        "ピカチュウ12.gif",
+        "ピカチュウ13.gif",
+        "ピカチュウ14.gif",
+        "ピカチュウ15.gif",
+        "ピカチュウ16.gif",
+        "ピカチュウ17.gif",
+        "ピカチュウ18.gif",
+        "ピカチュウ19.gif",
+        "ピカチュウ20.gif",
+        "ピカチュウ21.gif",
+        "ピカチュウ22.gif",
+        "ピカチュウ23.gif",
+        "ピカチュウ24.gif",
+        "ピカチュウ25.gif",
+        "ピカチュウ_お正月.gif",
+        "ピカチュウ_お祝い.gif",
+        "ピカチュウ_お雛様.gif",
+        "ピカチュウ_なみのり.gif",
+        "ピカチュウ_はかま.gif",
+        "ピカチュウ_コックさん.gif",
+        "ピカチュウ_サッカー.gif",
+        "ピカチュウ_ダンス.gif",
+        "ピカチュウ_ハロウィン.gif",
+        "ピカチュウ_バレンタイン.gif",
+        "ピカチュウ_ペア_01.gif",
+        "ピカチュウ_ペア_02.gif",
+        "ピカチュウ_体操.gif",
+        "ピカチュウ_歌.gif",
+        "ピカチュウ_獅子舞.gif",
+        "ピカチュウ_積み木.gif",
+        "ピカチュウ_雪だるま.gif",
+        "ピカチュウ_食事中.gif",
+        "ピカチュウ_鯉のぼり.gif",
+        "ピカチュウサンタ.gif",
+        "ピカチュウフェイス01.gif",
+        "ピカチュウフェイス02.gif",
+        "ピカチュウフェイス03.gif",
+        "ピカチュウフェイス04.gif",
+        "ピカチュウフェイス05.gif",
+        "ピカチュウフェイス06.gif",
+        "ピカチュウフェイス07.gif",
+        "ピカチュウフェイス08.gif",
+        "ピカチュウフェイス09.gif",
+        "ピカチュウフェイス10.gif",
+        "ピカチュウフェイス11.gif",
+        "ピカチュウフェイス12.gif",
+        "ピカチュウフェイス13.gif",
+        "ピカチュウ＆ぺリッパー.gif",
+        "ピカチュウ＆タマンタ.gif",
+        "ピカチュウ＆ピチュー.gif",
+        "ピチュー01.gif",
+        "ピッピ01.gif",
+        "ファイヤー01.gif",
+        "フシギダネ01.gif",
+        "フシギダネ02.gif",
+        "フリーザー01.gif",
+        "ブースター01.gif",
+        "プリン01.gif",
+        "ポッチャマ.gif",
+        "ミジュマル.gif",
+        "ミュウ01.gif",
+        "ミュウツー01.gif",
+        "メタモン01.gif",
+        "メッソン01.gif",
+        "モクロー01.gif",
+        "モンスターボール.gif",
+        "ヤドン01.gif",
+        "ライチュウ01.gif",
+        "ラッキー01.gif",
+        "ラプラス01.gif",
+        "リザードン01.gif",
+        "ロコン01.gif",
+        "本を読んだら元に戻そう.gif"
+    ];
+
+
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+
+    const popup = document.getElementById("popupImage");
+    const gif = document.getElementById("popupGif");
+
+    gif.src = folder + randomImage;
+    popup.style.display = "block";
+
+    setTimeout(() => {
+        popup.style.display = "none";
+    }, 1500);
 }
 
 function playSound(filename, button) {
@@ -55,6 +213,13 @@ function playSound(filename, button) {
     setTimeout(() => {
         button.style.backgroundColor = "lightgreen";
     }, 1500);
+
+    // ★ 10回押すごとにGIF表示
+    clickCount++;
+    if (clickCount >= 10) {
+        showRandomGif();
+        clickCount = 0;
+    }
 }
 
 function createTabs(data) {
