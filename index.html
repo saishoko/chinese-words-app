@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>中国語ことばあそび</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-buttons button { padding: 10px; cursor: pointer; }
+        .tab-content { display: none; }
+        .active { display: block; }
+        .word-button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px auto;
+            background-color: lightgreen;
+            border: 1px solid #333;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>中国語ことばあそび</h1>
+
+<div class="tab-buttons" id="tabButtons"></div>
+<div id="tabContents"></div>
+
+<script>
+async function loadData() {
+    const response = await fetch("data.json");
+    const data = await response.json();
+    return data;
+}
+
+function playSound(filename, button) {
+    const audio = new Audio("mp3data/" + filename);
+    audio.play();
+
+    // ボタン色変更
+    const originalColor = button.style.backgroundColor;
+    button.style.backgroundColor = "yellow";
+    setTimeout(() => {
+        button.style.backgroundColor = "lightgreen";
+    }, 1500);
+}
+
+function createTabs(data) {
+    const chunkSize = 10;
+    const tabButtons = document.getElementById("tabButtons");
+    const tabContents = document.getElementById("tabContents");
+
+    for (let start = 0; start < data.length; start += chunkSize) {
+        const end = start + chunkSize;
+        const chunk = data.slice(start, end);
+
+        // タブボタン
+        const tabBtn = document.createElement("button");
+        tabBtn.textContent = `No.${start + 1}-${end}`;
+        tabButtons.appendChild(tabBtn);
+
+        // タブ内容
+        const tabDiv = document.createElement("div");
+        tabDiv.className = "tab-content";
+
+        chunk.forEach(row => {
+            const label = `${row["にほんご"]}   ${row["中文"]}   ${row["拼音"]}`;
+            const filename = `${row["番号"]}_${row["中文"]}.mp3`;
+
+            const btn = document.createElement("button");
+            btn.className = "word-button";
+            btn.textContent = label;
+            btn.onclick = () => playSound(filename, btn);
+
+            tabDiv.appendChild(btn);
+        });
+
+        tabContents.appendChild(tabDiv);
+
+        // タブ切り替え処理
+        tabBtn.onclick = () => {
+            document.querySelectorAll(".tab-content").forEach(div => div.classList.remove("active"));
+            tabDiv.classList.add("active");
+        };
+
+        // 最初のタブを表示
+        if (start === 0) {
+            tabDiv.classList.add("active");
+        }
+    }
+}
+
+loadData().then(data => {
+    createTabs(data);
+});
+</script>
+
+</body>
+</html>
