@@ -61,7 +61,7 @@
 
 <script>
 async function loadData() {
-    const response = await fetch("data.json");
+    const response = await fetch("data_2.json");
     const data = await response.json();
     return data;
 }
@@ -206,7 +206,7 @@ function showRandomGif() {
 }
 
 function playSound(filename, button) {
-    const audio = new Audio("mp3data/" + filename);
+    const audio = new Audio("mp3data_2/" + filename);
     audio.play();
 
     button.style.backgroundColor = "yellow";
