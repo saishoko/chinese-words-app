@@ -363,6 +363,12 @@
                 });
                 answerButtons.appendChild(button);
             });
+            // 10問目の場合はボタンテキストを変更
+            if (currentQuestionIndex === totalQuestions - 1) {
+                nextButton.textContent = '結果へ';
+            } else {
+                nextButton.textContent = '次の問題へ';
+            }
         }
 
         function shuffleArray(array) {
