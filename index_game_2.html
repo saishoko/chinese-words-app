@@ -253,9 +253,11 @@
                 resultText.textContent = '〇 正解です！';
                 resultText.style.color = '#4caf50';
                 score += 1;
+                playEffect('正解1.mp3');
             } else {
                 resultText.textContent = '× 残念、不正解です。';
                 resultText.style.color = '#f44336';
+                playEffect('不正解1.mp3');
             }
             questionResults.push({
                 question: currentQuestion['にほんご'],
@@ -422,6 +424,7 @@
             });
             if (score === totalQuestions) {
                 showCelebrationImage();
+                playEffect('ジャジャーン1.mp3');
             } else {
                 document.getElementById('celebrationImageContainer').style.display = 'none';
             }
@@ -555,6 +558,13 @@
             const audio = new Audio('mp3data_2/' + filename);
             audio.play().catch(() => {
                 console.warn('音声再生に失敗しました。');
+            });
+        }
+
+        function playEffect(filename) {
+            const audio = new Audio('mp3data_2/' + filename);
+            audio.play().catch(() => {
+                console.warn(`効果音再生に失敗しました: ${filename}`);
             });
         }
     </script>
